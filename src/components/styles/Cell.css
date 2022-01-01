@@ -1,0 +1,31 @@
+ .cellClosed {
+    width: 40;
+    height: 40;
+    background-color: "grey";
+    border: "1px solid white";
+    display: "flex";
+    justify-content: "center";
+    align-items: "center";
+    font-size: "10px";
+    cursor: "pointer";
+  }
+
+  .cellOpen {
+    width: 40;
+    height: 40;
+    background-color: "white";
+    border: "1px solid white";
+    display: "flex";
+    justify-content: "center";
+    align-items: "center";
+    font-size: "10px";
+  };
+
+  .cellFlagged {
+    width: 40;
+    height: 40;
+    background-image: url("/public/flag.png");
+    background-size: "contain";
+    border: "1px solid white";
+    cursor: "pointer";
+  };

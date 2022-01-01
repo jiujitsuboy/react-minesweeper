@@ -1,0 +1,17 @@
+.GameList{
+    font-size: 15px;
+}
+
+.GameWizard{
+    margin: 20px 0 5px 0;
+}
+
+input {
+    margin: 0 5px;
+    width: 80px;
+    font-size: 12px;
+}
+
+button {
+    font-size: 15px;
+}
