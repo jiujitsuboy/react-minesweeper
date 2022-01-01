@@ -28,10 +28,6 @@ class Board extends Component {
     }
   }
 
-  _openAllCells(board) {
-    board.forEach((row) => row.forEach((col) => (col.opened = true)));
-  }
-
   async openCell(row, column) {
     const game = this.state;
 
@@ -44,21 +40,18 @@ class Board extends Component {
       );
 
       if (cellInfo.won) {
-        this._openAllCells(game.board);
         this.isWon = true;
+        game.details.won = this.isWon;
       } else if (cellInfo.cellValue === -1) {
-        this._openAllCells(game.board);
         this.hitMine = true;
-        console.log("DETONOOOOOO");
         game.board[row][column].detonated = this.hitMine;
       } else {
         game.board[row][column].flagged = false;
-        cellInfo.cellsOpened.forEach(
-          (cell) => (game.board[cell.row][cell.column].opened = true)
-        );
       }
 
-      game.details.won = this.isWon;
+      cellInfo.cellsOpened.forEach(
+        (cell) => (game.board[cell.row][cell.column].opened = true)
+      );
 
       this.setState(game, this._showGameStatus());
     } catch (err) {

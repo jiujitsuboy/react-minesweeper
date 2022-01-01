@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./styles/GameList.css";
 import Minesweeper from "../api/minesweeper";
 
-const userId = "f2681c02-006d-437c-9a3a-cb7011849876";
+const userId = "616fd18b-2fec-4168-a23b-33c5babdec26";
 
 class GameList extends Component {
   constructor(props) {
@@ -117,7 +117,7 @@ const GameWizard = () => {
           type="number"
           placeholder="rows"
           min="0"
-          max="999"
+          max="10"
           onInput={maxLengthAllow}
           onChange={enableSubmitButton}
         />
@@ -127,7 +127,7 @@ const GameWizard = () => {
           type="number"
           placeholder="columns"
           min="0"
-          max="999"
+          max="10"
           onInput={maxLengthAllow}
           onChange={enableSubmitButton}
         />
@@ -137,7 +137,7 @@ const GameWizard = () => {
           type="number"
           placeholder="bombs"
           min="0"
-          max="999"
+          max="100"
           onInput={maxLengthAllow}
           onChange={enableSubmitButton}
         />
