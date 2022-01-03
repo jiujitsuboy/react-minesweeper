@@ -5,7 +5,16 @@
     align-items: center;
 }
 
+.message {
+    width: 50%;
+    border-radius: 20px;
+    color: white;
+    padding: 5px;
+    font-size: "bolder";
+    margin: 20px auto;
+}
+
 .row {
     display: "flex";
-    flexDirection: "row";
-  };
+    flex-direction: "row";
+  }

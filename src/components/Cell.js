@@ -57,7 +57,6 @@ export default function Cell({ attributes, updateFlag, openCell }) {
   const updateFlagEvent = (event) => {
     updateFlag(event, attributes.row, attributes.column);
   };
-  console.log("attributes.detonated", attributes.detonated);
   return (
     <div
       style={

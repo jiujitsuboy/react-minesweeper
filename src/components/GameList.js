@@ -1,82 +1,88 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./styles/GameList.css";
-import Minesweeper from "../api/minesweeper";
-
-const userId = "616fd18b-2fec-4168-a23b-33c5babdec26";
+import Minesweeper from "../api/Minesweeper";
 
 class GameList extends Component {
   constructor(props) {
     super(props);
+    this.userId = this.props.auth.token.userId;
+    this.minesweeper = new Minesweeper();
     this.state = {
       games: [],
     };
   }
 
   async componentDidMount() {
-    console.log("Llamando API");
-    const games = await Minesweeper.getAllGamesForUser(userId);
-    this.setState({ games });
+    const resp = await this.minesweeper.getAllGamesForUser(this.userId);
+    this.setState({ games: resp.data });
   }
   render() {
     return (
       <div className="GameList">
-        <GameWizard />
-        <table
-          align="center"
-          className="GamesList"
-          border="1"
-          cellPadding="5"
-          cellSpacing="0"
-        >
-          <thead>
-            <tr>
-              <th>Created</th>
-              <th>Rows</th>
-              <th>Columns</th>
-              <th>Bombs</th>
-              <th>Ended</th>
-              <th>Played Time</th>
-              <th>Game Over</th>
-              <th>Won</th>
-              <th>&nbsp;</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.state.games.map((game, index) => {
-              return (
-                <tr key={index}>
-                  <td align="center">{game.startTime}</td>
-                  <td align="center">{game.rows}</td>
-                  <td align="center">{game.columns}</td>
-                  <td align="center">{game.numBombs}</td>
-                  <td align="center">{game.endTime}</td>
-                  <td align="center">{game.durationInSegs}</td>
-                  <td align="center">{game.gameOver?.toString()}</td>
-                  <td align="center">{game.won?.toString()}</td>
-                  <td align="center">
-                    {!game.isGameOver ? (
-                      <a
-                        href={`/board?userId=${game.user.id}&gameId=${game.id}`}
-                      >
-                        Resume
-                      </a>
-                    ) : (
-                      ""
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <GameWizard minesweeper={this.minesweeper} userId={this.userId} />
+        {this.state.games.length ? (
+          <table
+            align="center"
+            className="GamesList"
+            border="1"
+            cellPadding="10"
+            cellSpacing="0"
+          >
+            <thead>
+              <tr>
+                <th>Created</th>
+                <th>Rows</th>
+                <th>Columns</th>
+                <th>Bombs</th>
+                <th>Ended</th>
+                <th>Played Time</th>
+                <th>Game Over</th>
+                <th>Won</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.state.games.map((game, index) => {
+                return (
+                  <tr key={index}>
+                    <td align="center">{game.startTime}</td>
+                    <td align="center">{game.rows}</td>
+                    <td align="center">{game.columns}</td>
+                    <td align="center">{game.numBombs}</td>
+                    <td align="center">{game.endTime}</td>
+                    <td align="center">{game.durationInSegs}</td>
+                    <td align="center">{game.gameOver?.toString()}</td>
+                    <td align="center">{game.won?.toString()}</td>
+                    <td align="center">
+                      {!game.isGameOver ? (
+                        <a
+                          href={`/board?userId=${game.user.id}&gameId=${game.id}`}
+                        >
+                          Resume
+                        </a>
+                      ) : (
+                        ""
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        ) : (
+          <div className="container">
+            <div className="infomessage">No games currently</div>
+          </div>
+        )}
       </div>
     );
   }
 }
 
-const GameWizard = () => {
+const GameWizard = (props) => {
   const navigate = useNavigate();
+  const [errMsg, setErrMsg] = useState("");
 
   const maxLengthAllow = (event) => {
     if (event.target.value.length > 3) {
@@ -91,9 +97,18 @@ const GameWizard = () => {
     const columns = event.target.columns.value;
     const bombs = event.target.bombs.value;
 
-    const game = await Minesweeper.createNewGame(userId, rows, columns, bombs);
-    console.log("game received: ", game);
-    navigate(`/board?userId=${game.user.id}&gameId=${game.id}`);
+    const resp = await props.minesweeper.createNewGame(
+      props.userId,
+      rows,
+      columns,
+      bombs
+    );
+
+    if (!resp.success) {
+      setErrMsg(resp.data.message);
+    } else {
+      navigate(`/board?userId=${resp.data.user.id}&gameId=${resp.data.id}`);
+    }
   };
 
   const enableSubmitButton = (event) => {
@@ -110,6 +125,9 @@ const GameWizard = () => {
 
   return (
     <div className="GameWizard">
+      <span className="error" style={{ dispay: errMsg ? "block" : "none" }}>
+        {errMsg}
+      </span>
       <form onSubmit={gameSubmitHandler}>
         <span>Rows</span>
         <input

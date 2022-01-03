@@ -1,10 +1,11 @@
-const GAME_URL = "http://localhost:8082/api/v1/game";
-const TOKEN =
-  "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJzY290dDIiLCJyb2xlcyI6WyJBRE1JTiJdLCJpc3MiOiJNaW5lU3dlZXBlciBBUEkiLCJleHAiOjE2NDIwMjkxOTAsImlhdCI6MTY0MTAyOTE5MH0.eL9wvi5wrTCaRe4nua_1KEpWeTvlHjUgbYlr2TguTpUne7FvzGCbEcC5Pxn6EyWVJUSQrXa5G2AQndAHggc6C6CpZ8EoEI6ADId6IzjxcTpa7V-HtD4AQo_yIuQQUFdBCe2rTLORqrTinyxDnNrRixvodsLjgdWvcuqvYlHJdHB25K2bHxi_zT1_TWQuhWsHIxgbJ8MoGSFGD91IJBgqBBSA1daqAwifJ4xNWlnuFdaL3KWi3e0Sp1JWQrfLrNCkXZG5Qdscby9urlmAZ_aOoF_yRaaY4PezvCKap-xqS794DJx_L5EOBqBuGOZ4xiG2TqNBA4nsbDZPhWZ_wW_uRjilO60P_NCgtyYIJpA7FWbRL2wFQQ1iDeyIc6sNjJjmx6eT8klEgerdmKvWLh5s5oPjCtRM1lsm2mkUgCQ7JubpXQEa7JHzXdfF1XKlmkhNmrSXD1KRhEiItLIQQ5Lm7GclhFtR8KdPDV5GWgiQ2K1mYAZaRckJwH4l5dCdVkMravfcg3kB-NUVsUi18tMaIV98ck4gbqNG5prTZMMY0Z_fKcyNK13o2Qm07FwPOI8k1_EfbQ8bZcBzqnjcKpqQJRSpEuBGB4mreFv7-rEMdLe4rTPFR1kvfI09NewFctNRqS8Z_s5FoKTob7tXn_bGQVFgJ9WrWxQlT6TAF-rlvEw";
+import Config from "./Config";
 
 class Minesweeper {
-  static createNewGame(userId, numRows, numColumns, numBombs) {
-    return fetch(`${GAME_URL}/`, {
+  constructor() {
+    this.config = new Config();
+  }
+  createNewGame(userId, numRows, numColumns, numBombs) {
+    return fetch(`${this.config.GAME_URL}/`, {
       method: "POST",
       body: JSON.stringify({
         userId,
@@ -13,43 +14,52 @@ class Minesweeper {
         numBombs,
       }),
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${TOKEN}`,
+        ...this.config.headersWithAuthorization(),
       },
     })
-      .then((resp) => resp.json())
-      .catch((err) => console.log(err));
-  }
-
-  static getGameForUser(gameId, userId) {
-    return fetch(`${GAME_URL}/${userId}/${gameId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${TOKEN}`,
-      },
-    })
-      .then((resp) => resp.json())
-      .catch((err) => console.log(err));
-  }
-
-  static getAllGamesForUser(userId) {
-    return fetch(`${GAME_URL}/${userId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${TOKEN}`,
-      },
-    })
-      .then((resp) => {
-        console.log("resp", resp);
-        return resp.json();
+      .then((response) => Promise.all([response, response.json()]))
+      .then(([response, json]) => {
+        return { success: response.ok, data: json };
       })
-      .catch((err) => console.log(err));
+      .catch((e) => {
+        return { success: false, data: this._handleError(e) };
+      });
   }
 
-  static openCell(gameId, userId, row, column) {
-    return fetch(`${GAME_URL}/cell`, {
+  getGameForUser(gameId, userId) {
+    return fetch(`${this.config.GAME_URL}/${userId}/${gameId}`, {
+      method: "GET",
+      headers: {
+        ...this.config.headersWithAuthorization(),
+      },
+    })
+      .then((response) => Promise.all([response, response.json()]))
+      .then(([response, json]) => {
+        return { success: response.ok, data: json };
+      })
+      .catch((e) => {
+        return { success: false, data: this._handleError(e) };
+      });
+  }
+
+  getAllGamesForUser(userId) {
+    return fetch(`${this.config.GAME_URL}/${userId}`, {
+      method: "GET",
+      headers: {
+        ...this.config.headersWithAuthorization(),
+      },
+    })
+      .then((response) => Promise.all([response, response.json()]))
+      .then(([response, json]) => {
+        return { success: response.ok, data: json };
+      })
+      .catch((e) => {
+        return { success: false, data: this._handleError(e) };
+      });
+  }
+
+  openCell(gameId, userId, row, column) {
+    return fetch(`${this.config.GAME_URL}/cell`, {
       method: "PATCH",
       body: JSON.stringify({
         gameId: gameId,
@@ -58,30 +68,20 @@ class Minesweeper {
         column: column,
       }),
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${TOKEN}`,
+        ...this.config.headersWithAuthorization(),
       },
     })
-      .then((resp) => {
-        return resp.json().then((body) => {
-          return { resp, body };
-        });
+      .then((response) => Promise.all([response, response.json()]))
+      .then(([response, json]) => {
+        return { success: response.ok, data: json };
       })
-      .then((obj) => {
-        console.log("respuesta: ", obj.body);
-        if (obj.resp.status !== 200) {
-          throw new Error(obj.body.message);
-        }
-        return obj.body;
-      })
-      .catch((err) => {
-        console.log(err.message);
-        throw new Error(err.message);
+      .catch((e) => {
+        return { success: false, data: this._handleError(e) };
       });
   }
 
-  static markCell(gameId, userId, row, column, flaggedCell) {
-    return fetch(`${GAME_URL}/cell/flagged`, {
+  markCell(gameId, userId, row, column, flaggedCell) {
+    return fetch(`${this.config.GAME_URL}/cell/flagged`, {
       method: "PATCH",
       body: JSON.stringify({
         gameId,
@@ -91,12 +91,25 @@ class Minesweeper {
         flaggedCell,
       }),
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${TOKEN}`,
+        ...this.config.headersWithAuthorization(),
       },
     })
-      .then((resp) => resp.json())
-      .catch((err) => console.log(err));
+      .then((response) => Promise.all([response, response.json()]))
+      .then(([response, json]) => {
+        return { success: response.ok, data: json };
+      })
+      .catch((e) => {
+        return { success: false, data: this._handleError(e) };
+      });
+  }
+
+  _handleError(error) {
+    const err = new Map([
+      [TypeError, "Can't connect to server."],
+      [SyntaxError, "There was a problem parsing the response."],
+      [Error, error.message],
+    ]).get(error.constructor);
+    return { message: err };
   }
 }
 

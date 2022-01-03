@@ -2,14 +2,19 @@ import React, { Component } from "react";
 import "./styles/Board.css";
 import Cell from "./Cell";
 import { useLocation } from "react-router-dom";
-import Minesweeper from "../api/minesweeper";
+import Minesweeper from "../api/Minesweeper";
 
 class Board extends Component {
   constructor(props) {
     super(props);
+    this.minesweeper = new Minesweeper();
     this.state = {
       details: {},
       board: [],
+      result: {
+        message: "",
+        color: "",
+      },
     };
   }
 
@@ -17,7 +22,7 @@ class Board extends Component {
     event.preventDefault();
     const newBoard = this.state.board;
     if (!newBoard[row][column].opened) {
-      newBoard[row][column].flagged = await Minesweeper.markCell(
+      newBoard[row][column].flagged = await this.minesweeper.markCell(
         this.gameId,
         this.userId,
         row,
@@ -31,32 +36,41 @@ class Board extends Component {
   async openCell(row, column) {
     const game = this.state;
 
-    try {
-      const cellInfo = await Minesweeper.openCell(
-        this.gameId,
-        this.userId,
-        row,
-        column
-      );
+    const respCellInfo = await this.minesweeper.openCell(
+      this.gameId,
+      this.userId,
+      row,
+      column
+    );
 
-      if (cellInfo.won) {
+    if (!respCellInfo.success) {
+      // alert(respCellInfo.data.message);
+      game.result = { message: respCellInfo.data.message, color: "purple" };
+    } else {
+      if (respCellInfo.data.won) {
         this.isWon = true;
         game.details.won = this.isWon;
-      } else if (cellInfo.cellValue === -1) {
+        game.result = {
+          message: "Congratulation, you won the game",
+          color: "green",
+        };
+      } else if (respCellInfo.data.cellValue === -1) {
         this.hitMine = true;
         game.board[row][column].detonated = this.hitMine;
+        game.result = {
+          message: "You hit a mine, you lost the game",
+          color: "red",
+        };
       } else {
         game.board[row][column].flagged = false;
       }
 
-      cellInfo.cellsOpened.forEach(
+      respCellInfo.data.cellsOpened.forEach(
         (cell) => (game.board[cell.row][cell.column].opened = true)
       );
-
-      this.setState(game, this._showGameStatus());
-    } catch (err) {
-      alert(err);
     }
+
+    this.setState(game);
   }
 
   _showGameStatus() {
@@ -72,34 +86,44 @@ class Board extends Component {
     this.gameId = query.get("gameId");
     this.userId = query.get("userId");
 
-    const gameDetails = await Minesweeper.getGameForUser(
+    const gameDetails = await this.minesweeper.getGameForUser(
       this.gameId,
       this.userId
     );
-    console.log("gameDetails: ", gameDetails);
-    this.setState({ ...gameDetails });
+    this.setState({ ...gameDetails.data });
   }
 
   render() {
     return (
-      <div className="board">
-        {this.state.board.map((row, indexRow) => {
-          return (
-            <div key={indexRow} className="row">
-              {row.map((column, indexCol) => {
-                return (
-                  <Cell
-                    key={indexCol}
-                    attributes={column}
-                    updateFlag={this.updateFlag.bind(this)}
-                    openCell={this.openCell.bind(this)}
-                  />
-                );
-              })}
-            </div>
-          );
-        })}
-      </div>
+      <>
+        <div
+          className="message"
+          style={{
+            backgroundColor: this.state.result.color,
+            visibility: this.state.result.message ? "visible" : "hidden",
+          }}
+        >
+          {this.state.result.message}
+        </div>
+        <div className="board">
+          {this.state.board.map((row, indexRow) => {
+            return (
+              <div key={indexRow} className="row">
+                {row.map((column, indexCol) => {
+                  return (
+                    <Cell
+                      key={indexCol}
+                      attributes={column}
+                      updateFlag={this.updateFlag.bind(this)}
+                      openCell={this.openCell.bind(this)}
+                    />
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+      </>
     );
   }
 }
