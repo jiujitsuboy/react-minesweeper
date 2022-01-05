@@ -4,18 +4,64 @@ import "./styles/GameList.css";
 import Minesweeper from "../api/Minesweeper";
 
 class GameList extends Component {
+  PAGE_SIZE = 5;
   constructor(props) {
     super(props);
     this.userId = this.props.auth.token.userId;
     this.minesweeper = new Minesweeper();
     this.state = {
       games: [],
+      pageInfo: {},
     };
   }
 
   async componentDidMount() {
-    const resp = await this.minesweeper.getAllGamesForUser(this.userId);
-    this.setState({ games: resp.data });
+    const resp = await this.minesweeper.getAllGamesForUser({
+      userId: this.userId,
+      page: 0,
+      size: this.PAGE_SIZE,
+    });
+    console.log("resp.data: ", resp.data);
+    this.setState(
+      { games: resp.data.content, pageInfo: resp.data.page },
+      () => {
+        console.log("number: ", this.state.pageInfo.number);
+        console.log("totalPages: ", this.state.pageInfo.totalPages);
+        console.log(
+          "this.state.pageInfo.number === 0 ",
+          this.state.pageInfo.number === 0
+        );
+        console.log(
+          "this.state.pageInfo.number < this.state.pageInfo.totalPages ",
+          this.state.pageInfo.number < this.state.pageInfo.totalPages - 1
+        );
+      }
+    );
+  }
+
+  async changeCurrentPage(newPage) {
+    console.log("this.state.pageInfo: ", this.state.pageInfo);
+    const resp = await this.minesweeper.getAllGamesForUser({
+      userId: this.userId,
+      page: newPage,
+      size: this.PAGE_SIZE,
+    });
+    this.setState(
+      { games: resp.data.content, pageInfo: resp.data.page },
+      () => {
+        console.log("newPage: ", newPage);
+        console.log("number: ", this.state.pageInfo.number);
+        console.log("totalPages: ", this.state.pageInfo.totalPages);
+        console.log(
+          "this.state.pageInfo.number === 0 ",
+          this.state.pageInfo.number === 0
+        );
+        console.log(
+          "this.state.pageInfo.number < this.state.pageInfo.totalPages ",
+          this.state.pageInfo.number < this.state.pageInfo.totalPages - 1
+        );
+      }
+    );
   }
   render() {
     return (
@@ -46,18 +92,18 @@ class GameList extends Component {
               {this.state.games.map((game, index) => {
                 return (
                   <tr key={index}>
-                    <td align="center">{game.startTime}</td>
-                    <td align="center">{game.rows}</td>
-                    <td align="center">{game.columns}</td>
-                    <td align="center">{game.numBombs}</td>
-                    <td align="center">{game.endTime}</td>
-                    <td align="center">{game.durationInSegs}</td>
-                    <td align="center">{game.gameOver?.toString()}</td>
-                    <td align="center">{game.won?.toString()}</td>
+                    <td align="center">{game.details.startTime}</td>
+                    <td align="center">{game.details.rows}</td>
+                    <td align="center">{game.details.columns}</td>
+                    <td align="center">{game.details.numBombs}</td>
+                    <td align="center">{game.details.endTime}</td>
+                    <td align="center">{game.details.durationInSegs}</td>
+                    <td align="center">{game.details.gameOver?.toString()}</td>
+                    <td align="center">{game.details.won?.toString()}</td>
                     <td align="center">
                       {!game.isGameOver ? (
                         <a
-                          href={`/board?userId=${game.user.id}&gameId=${game.id}`}
+                          href={`/board?userId=${game.details.user.id}&gameId=${game.details.id}`}
                         >
                           Resume
                         </a>
@@ -69,6 +115,33 @@ class GameList extends Component {
                 );
               })}
             </tbody>
+            <tfoot>
+              <tr>
+                <td colSpan="9">
+                  <button
+                    className="link-button"
+                    onClick={() =>
+                      this.changeCurrentPage(this.state.pageInfo.number - 1)
+                    }
+                    disabled={this.state.pageInfo.number === 0}
+                  >
+                    Back
+                  </button>
+                  <button
+                    className="link-button"
+                    onClick={() =>
+                      this.changeCurrentPage(this.state.pageInfo.number + 1)
+                    }
+                    disabled={
+                      this.state.pageInfo.number >=
+                      this.state.pageInfo.totalPages - 1
+                    }
+                  >
+                    Next
+                  </button>
+                </td>
+              </tr>
+            </tfoot>
           </table>
         ) : (
           <div className="container">
@@ -84,9 +157,9 @@ const GameWizard = (props) => {
   const navigate = useNavigate();
   const [errMsg, setErrMsg] = useState("");
 
-  const maxLengthAllow = (event) => {
-    if (event.target.value.length > 3) {
-      event.target.value = event.target.value.slice(0, 3);
+  const maxLengthAllow = (event, allowNumber) => {
+    if (event.target.value.length > allowNumber) {
+      event.target.value = event.target.value.slice(0, allowNumber);
     }
   };
 
@@ -136,7 +209,7 @@ const GameWizard = (props) => {
           placeholder="rows"
           min="0"
           max="10"
-          onInput={maxLengthAllow}
+          onInput={(e) => maxLengthAllow(e, 2)}
           onChange={enableSubmitButton}
         />
         <span>Columns</span>
@@ -146,7 +219,7 @@ const GameWizard = (props) => {
           placeholder="columns"
           min="0"
           max="10"
-          onInput={maxLengthAllow}
+          onInput={(e) => maxLengthAllow(e, 2)}
           onChange={enableSubmitButton}
         />
         <span>Bombs</span>
@@ -156,7 +229,7 @@ const GameWizard = (props) => {
           placeholder="bombs"
           min="0"
           max="100"
-          onInput={maxLengthAllow}
+          onInput={(e) => maxLengthAllow(e, 3)}
           onChange={enableSubmitButton}
         />
         <button id="submitButton" type="submit" disabled>

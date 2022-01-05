@@ -15,3 +15,26 @@ input {
 button {
     font-size: 15px;
 }
+
+.link-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    display: inline;
+    margin: 0;
+    padding: 0;
+    color:black
+  }
+
+  .link-button:disabled {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline;
+    margin: 0;
+    padding: 0;
+    pointer-events:none;
+    color:gray
+  }

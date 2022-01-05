@@ -21,14 +21,25 @@ class Board extends Component {
   async updateFlag(event, row, column) {
     event.preventDefault();
     const newBoard = this.state.board;
+
     if (!newBoard[row][column].opened) {
-      newBoard[row][column].flagged = await this.minesweeper.markCell(
+      const respMarkCell = await this.minesweeper.markCell(
         this.gameId,
         this.userId,
         row,
         column,
         !newBoard[row][column].flagged
       );
+
+      if (!respMarkCell.success) {
+        this.state.result = {
+          message: respMarkCell.data.message,
+          color: "purple",
+        };
+      } else {
+        newBoard[row][column].flagged = respMarkCell.data;
+      }
+
       this.setState({ details: this.state.details, board: newBoard });
     }
   }

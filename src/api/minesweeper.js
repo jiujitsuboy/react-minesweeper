@@ -42,13 +42,16 @@ class Minesweeper {
       });
   }
 
-  getAllGamesForUser(userId) {
-    return fetch(`${this.config.GAME_URL}/${userId}`, {
-      method: "GET",
-      headers: {
-        ...this.config.headersWithAuthorization(),
-      },
-    })
+  getAllGamesForUser({ userId, page, size }) {
+    return fetch(
+      `${this.config.GAME_URL}/${userId}?page=${page}&size=${size}`,
+      {
+        method: "GET",
+        headers: {
+          ...this.config.headersWithAuthorization(),
+        },
+      }
+    )
       .then((response) => Promise.all([response, response.json()]))
       .then(([response, json]) => {
         return { success: response.ok, data: json };
