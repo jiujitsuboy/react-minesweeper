@@ -28,6 +28,10 @@ You can see your previous games to review how was the result.
 Guide by the numbers each open cell you have, you can figure out which cells can contain a bomb. Just mark it with a flag so you dont forget where the bomb is.
 ![](images/FlaggedCell.png)
 
+### Empty cells
+When you open a cell without a number (which mean there is not a bomb adjacent to this cell), all the empty neighbor cells will open.
+![](images/EmptyCell.png)
+
 ## How to play
 
 1. Run the Rest API using this instructions in it repository [Minesweeper](https://github.com/jiujitsuboy/Minesweeper-API).
