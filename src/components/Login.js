@@ -1,5 +1,6 @@
 import React, { Component, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./styles/Login.css";
 
 class Login extends Component {
   constructor(props) {
@@ -55,7 +56,7 @@ const SignIn = (props) => {
       >
         {errMsg}
       </div>
-      <form onSubmit={handleSubmit}>
+      <form className="login" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="username">Username</label>
           <input type="text" name="username"></input>
@@ -111,7 +112,7 @@ const SignUp = (props) => {
       >
         {errMsg}
       </div>
-      <form onSubmit={handleSubmit}>
+      <form className="login" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="username">Username</label>
           <input type="text" name="username"></input>

@@ -1,0 +1,52 @@
+form {
+    border: 3px solid #f1f1f1;
+    border-radius: 20px;
+    
+  }
+
+form.login{
+    margin: auto 0;
+    background-color: lightgray;
+}
+
+  label{
+    font-weight: bolder;
+    float: left;
+    padding-top: 14px;
+    padding-left: 14px;
+}
+
+.container {
+    padding: 16px;
+    display: block;
+    margin: 0 auto;
+    align-items: center;
+    width: 400px;
+  }
+  
+  span.signup {
+    float: right;
+    padding-top: 16px;
+  }
+  
+  .error{
+    color: red
+  }
+  
+  .errormessage {
+    width: 100%;
+    background-color: red;
+    border-radius: 20px;
+    color: white;
+    padding: 5px;
+    font-size: "bolder";
+  }
+  
+  .infomessage {
+    width: 100%;
+    background-color: darkblue;
+    border-radius: 20px; 
+    color: white;
+    padding: 5px;
+    font-size: "bolder";
+  }

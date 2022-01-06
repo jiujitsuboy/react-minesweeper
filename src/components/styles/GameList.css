@@ -1,9 +1,11 @@
 .GameList{
     font-size: 15px;
+    overflow-x:auto;
 }
 
 .GameWizard{
     margin: 20px 0 5px 0;
+    overflow-x:auto;
 }
 
 input {

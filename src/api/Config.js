@@ -1,7 +1,7 @@
 class Config {
-  SCHEME = "http";
-  HOST = "localhost";
-  PORT = "8082";
+  SCHEME = process.env.SCHEME ? process.env.SCHEME : "http";
+  HOST = process.env.HOST ? process.env.HOST : "localhost";
+  PORT = process.env.PORT ? process.env.PORT : "8082";
   LOGIN_URL = `${this.SCHEME}://${this.HOST}:${this.PORT}/api/v1/auth/token`;
   SING_UP_URL = `${this.SCHEME}://${this.HOST}:${this.PORT}/api/v1/auth/users`;
   GAME_URL = `${this.SCHEME}://${this.HOST}:${this.PORT}/api/v1/game`;

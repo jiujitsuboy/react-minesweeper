@@ -71,7 +71,6 @@ class GameList extends Component {
           <table
             align="center"
             className="GamesList"
-            border="1"
             cellPadding="10"
             cellSpacing="0"
           >
@@ -91,25 +90,21 @@ class GameList extends Component {
             <tbody>
               {this.state.games.map((game, index) => {
                 return (
-                  <tr key={index}>
-                    <td align="center">{game.details.startTime}</td>
-                    <td align="center">{game.details.rows}</td>
-                    <td align="center">{game.details.columns}</td>
-                    <td align="center">{game.details.numBombs}</td>
-                    <td align="center">{game.details.endTime}</td>
-                    <td align="center">{game.details.durationInSegs}</td>
-                    <td align="center">{game.details.gameOver?.toString()}</td>
-                    <td align="center">{game.details.won?.toString()}</td>
+                  <tr key={index} className="row">
+                    <td align="center">{game.startTime}</td>
+                    <td align="center">{game.rows}</td>
+                    <td align="center">{game.columns}</td>
+                    <td align="center">{game.numBombs}</td>
+                    <td align="center">{game.endTime}</td>
+                    <td align="center">{game.durationInSegs}</td>
+                    <td align="center">{game.gameOver?.toString()}</td>
+                    <td align="center">{game.won?.toString()}</td>
                     <td align="center">
-                      {!game.isGameOver ? (
-                        <a
-                          href={`/board?userId=${game.details.user.id}&gameId=${game.details.id}`}
-                        >
-                          Resume
-                        </a>
-                      ) : (
-                        ""
-                      )}
+                      <a
+                        href={`/board?userId=${game.user.id}&gameId=${game.id}`}
+                      >
+                        {!game.gameOver ? "Resume" : "Review"}
+                      </a>
                     </td>
                   </tr>
                 );
@@ -201,7 +196,7 @@ const GameWizard = (props) => {
       <span className="error" style={{ dispay: errMsg ? "block" : "none" }}>
         {errMsg}
       </span>
-      <form onSubmit={gameSubmitHandler}>
+      <form className="wizard" onSubmit={gameSubmitHandler}>
         <span>Rows</span>
         <input
           id="rows"
