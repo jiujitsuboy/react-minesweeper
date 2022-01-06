@@ -5,6 +5,14 @@ This is a UI built in React 17 for playing MineSweeper consuming the Rest API [M
 Minesweeper is a classic game that consist of a board of n*m cells and a number of bombs hidden. The purpose of the games is to open all the
 cells that don't contain a bomb and optionally mark those cells with a flag.
 
+## Features
+
+* You can create as many users as you want.
+* Every user can create and play their own custom games.
+* Leave a starting game and resume when ever you want.
+* Review the status of your games and even see the board after game is over.
+* Mark cells with flags.
+
 ### Game Won
 If you open all non bombs cell, **YOU WIN**
 ![](images/WonGame.png)
@@ -19,15 +27,6 @@ You can see your previous games to review how was the result.
 ### Flag cells
 Guide by the numbers each open cell you have, you can figure out which cells can contain a bomb. Just mark it with a flag so you dont forget where the bomb is.
 ![](images/FlaggedCell.png)
-
-## Features
-
-* You can create as many users as you want.
-* Every user can create and play their own custom games.
-* Leave a starting game and resume when ever you want.
-* Review the status of your games and even see the board after game is over.
-* Mark cells with flags.
-
 
 ## How to play
 
@@ -47,3 +46,4 @@ Guide by the numbers each open cell you have, you can figure out which cells can
    ![](images/PlayGame.png)
 7. Using the user's dashboard you can resume games or review the game results.
    ![](images/ResumeGame.png) 
+8. Enjoy it :satisfied:
