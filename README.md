@@ -1,70 +1,49 @@
-# Getting Started with Create React App
+# Minesweeper React UI
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a UI built in React 17 for playing MineSweeper consuming the Rest API [Minesweeper](https://github.com/jiujitsuboy/Minesweeper-API).
 
-## Available Scripts
+Minesweeper is a classic game that consist of a board of n*m cells and a number of bombs hidden. The purpose of the games is to open all the
+cells that don't contain a bomb and optionally mark those cells with a flag.
 
-In the project directory, you can run:
+### Game Won
+If you open all non bombs cell, **YOU WIN**
+![](images/WonGame.png)
+### Game Lost
+If you open a cell that contains a bomb, **YOU LOOSE**.
+![](images/HitBomb.png)
 
-### `npm start`
+### Game Already played
+You can see your previous games to review how was the result.
+![](images/GameIsOverAlready.png)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Flag cells
+Guide by the numbers each open cell you have, you can figure out which cells can contain a bomb. Just mark it with a flag so you dont forget where the bomb is.
+![](images/FlaggedCell.png)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Features
 
-### `npm test`
+* You can create as many users as you want.
+* Every user can create and play their own custom games.
+* Leave a starting game and resume when ever you want.
+* Review the status of your games and even see the board after game is over.
+* Mark cells with flags.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+## How to play
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+1. Run the Rest API using this instructions in it repository [Minesweeper](https://github.com/jiujitsuboy/Minesweeper-API).
+2. Run the React UI using the following commands:
+   ```
+       npm install     -->(install all the modules dependencies of the app)
+       npm start       -->(start the react server and run the app)
+   ```
+3. Register in the game using the SignUp option.
+   ![](images/SignUp.png)    
+4. Log in using the Signin option.
+   ![](images/SignIn.png)
+5. From the user's dashboard, create as many new games you want by customize the board with the rows, cells and bombs you desired. (board max size is 10*10 and 100 bombs).
+   ![](images/Dashboard.png)
+6. Play the created board or leave and resume it when ever you want.
+   ![](images/PlayGame.png)
+7. Using the user's dashboard you can resume games or review the game results.
+   ![](images/ResumeGame.png) 

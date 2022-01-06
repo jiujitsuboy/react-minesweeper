@@ -101,10 +101,17 @@ class Board extends Component {
       this.gameId,
       this.userId
     );
-    this.setState({ ...gameDetails.data });
+    if (!gameDetails.success) {
+      this.setState({
+        result: { message: gameDetails.data.message, color: "purple" },
+      });
+    } else {
+      this.setState({ ...gameDetails.data });
+    }
   }
 
   render() {
+    console.log("state:", this.state);
     return (
       <>
         <div
